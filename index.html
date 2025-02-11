@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>💘 Ты — мой exception</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <style>
+        :root {
+            --heart: #ff3f81;
+            --bg: #0f0f1a;
+        }
+        
+        * {
+            touch-action: manipulation;
+        }
+
+        body {
+            margin: 0;
+            background: var(--bg);
+            overflow: hidden;
+            font-family: 'Courier New', monospace;
+        }
+
+        #loveCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+        }
+
+        .ui {
+            position: relative;
+            z-index: 2;
+            color: white;
+            padding: 20px;
+            pointer-events: none;
+        }
+
+        .message {
+            font-size: 1.2em;
+            line-height: 1.5;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: 1s;
+            background: rgba(0,0,0,0.7);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 10px 0;
+        }
+
+        .show { opacity: 1; transform: none; }
+
+        .heart-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 60px;
+            background: var(--heart);
+            border-radius: 50%;
+            cursor: pointer;
+            pointer-events: all;
+            box-shadow: 0 0 30px var(--heart);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: translateX(-50%) scale(1); }
+            50% { transform: translateX(-50%) scale(1.1); }
+            100% { transform: translateX(-50%) scale(1); }
+        }
+
+        #debug {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            color: #fff;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="loveCanvas"></canvas>
+    <div class="ui">
+        <div class="message" id="msg1">[System] Initializing LoveOS...</div>
+        <div class="message" id="msg2">[Physics] Attraction force: ∞</div>
+        <div class="message" id="msg3">[AI] You’re my optimal solution</div>
+    </div>
+    <div class="heart-btn" id="heart"></div>
+    <div id="debug"></div>
+
+<script>
+const messages = [
+    {text: "Подключаю гравитацию сердца...", delay: 1000},
+    {text: "Синхронизация взглядов... ✓", delay: 1500},
+    {text: "Твои глаза → blackhole (escape impossible)", delay: 2000},
+    {text: "Сканирование улыбки... 100% match", delay: 1000},
+    {text: "!!! ВНИМАНИЕ !!! Обнаружена перегрузка cute_mode", delay: 2000},
+];
+
+class LoveSimulator {
+    constructor() {
+        this.canvas = document.getElementById('loveCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.particles = [];
+        this.resize();
+        this.bindEvents();
+        this.animate();
+        
+        // Mobile sensors
+        this.acc = {x:0, y:0};
+        if (window.DeviceOrientationEvent) {
+            window.addEventListener('deviceorientation', (e) => {
+                this.acc.x = e.gamma * 0.1; 
+                this.acc.y = e.beta * 0.1;
+            });
+        }
+    }
+
+    resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+    }
+
+    bindEvents() {
+        window.addEventListener('resize', this.resize.bind(this));
+        
+        // Heart interactions
+        const heart = document.getElementById('heart');
+        let tapCount = 0;
+        
+        heart.addEventListener('click', () => {
+            this.createExplosion();
+            if (tapCount < messages.length) {
+                document.getElementById(`msg${tapCount+1}`).classList.add('show');
+                tapCount++;
+            }
+            if (tapCount === messages.length) {
+                this.showFinale();
+            }
+        });
+    }
+
+    createExplosion(x = this.canvas.width/2, y = this.canvas.height/2) {
+        for(let i = 0; i < 50; i++) {
+            this.particles.push({
+                x, y,
+                vx: (Math.random() - 0.5) * 5,
+                vy: (Math.random() - 0.5) * 5 - 2,
+                life: 1,
+                color: `hsl(${Math.random()*360}, 100%, 50%)`
+            });
+        }
+    }
+
+    showFinale() {
+        const finaleMsg = document.createElement('div');
+        finaleMsg.className = 'message show';
+        finaleMsg.innerHTML = `
+            <div style="color: #ff3f81; text-align: center">
+                <div>💖 COMPILATION SUCCESS 💖</div>
+                <div style="font-size:0.8em">You're my:<br>
+                <span style="color: #00ff9d">while(true) { love++ }</span>
+                </div>
+            </div>
+        `;
+        document.querySelector('.ui').appendChild(finaleMsg);
+    }
+
+    animate() {
+        this.ctx.fillStyle = var(--bg);
+        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        
+        // Update particles
+        this.particles.forEach((p, i) => {
+            p.x += p.vx + this.acc.x;
+            p.y += p.vy + this.acc.y;
+            p.vy += 0.1;
+            p.life -= 0.02;
+            
+            this.ctx.fillStyle = p.color;
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, 3 * p.life, 0, Math.PI * 2);
+            this.ctx.fill();
+            
+            if (p.life <= 0) this.particles.splice(i, 1);
+        });
+        
+        requestAnimationFrame(this.animate.bind(this));
+    }
+}
+
+new LoveSimulator();
+
+// Easter egg: Konami code
+const konami = [38,38,40,40,37,39,37,39,66,65];
+let input = [];
+document.addEventListener('keyup', (e) => {
+    input.push(e.keyCode);
+    if (input.toString().includes(konami.toString())) {
+        document.body.style.background = '#000';
+        alert('Secret cheat code: LoveUnlocked=true');
+    }
+});
+</script>
+</body>
+</html>
