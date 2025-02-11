@@ -1,216 +1,282 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
+    <title>Valentine's Surprise 💝</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Для Самой Особенной ❤️</title>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Roboto:wght@300;500&display=swap');
         
+        :root {
+            --pink: #ff69b4;
+            --dark: #1a1a1a;
+        }
+
         body {
             margin: 0;
-            background: #1a1a1a;
+            background: var(--dark);
+            font-family: 'Roboto', sans-serif;
+            min-height: 100vh;
             overflow-x: hidden;
-            font-family: 'Pacifico', cursive;
-            color: #fff;
         }
 
         .container {
-            max-width: 1000px;
-            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
             padding: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
             text-align: center;
+            max-width: 600px;
+            width: 90%;
+            transform: scale(0);
+            animation: cardAppear 1s forwards 0.5s;
+            box-shadow: 0 0 30px rgba(255, 105, 180, 0.3);
+        }
+
+        h1 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--pink);
+            font-size: 3.5em;
+            margin: 0 0 20px 0;
+            text-shadow: 0 0 15px rgba(255, 105, 180, 0.5);
+        }
+
+        .hearts-background {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
         }
 
         .heart {
             position: absolute;
-            width: 20px;
-            height: 20px;
-            background: #ff4081;
-            transform: rotate(45deg);
-            animation: float 3s infinite;
+            font-size: 24px;
+            animation: float 6s infinite linear;
+            opacity: 0.3;
         }
 
-        .heart:before,
-        .heart:after {
+        .game-container {
+            display: none;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            margin-top: 30px;
+            width: 90%;
+            max-width: 800px;
+        }
+
+        .code-block {
+            background: #002200;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-family: monospace;
+            color: #0f0;
+            text-align: left;
+            position: relative;
+        }
+
+        .code-block::after {
             content: '';
             position: absolute;
-            width: 20px;
-            height: 20px;
-            background: #ff4081;
+            right: 10px;
+            top: 10px;
+            width: 10px;
+            height: 10px;
+            background: #0f0;
             border-radius: 50%;
+            animation: pulse 1s infinite;
         }
 
-        .heart:before {
-            top: -10px;
-            left: 0;
+        .solution-btns {
+            display: grid;
+            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
         }
 
-        .heart:after {
-            left: -10px;
-            top: 0;
+        .btn {
+            background: var(--pink);
+            border: none;
+            padding: 15px;
+            color: white;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            font-size: 1.1em;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(255, 105, 180, 0.4);
+        }
+
+        #victory {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.95);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 500px;
+            width: 90%;
+        }
+
+        @keyframes cardAppear {
+            to { transform: scale(1); }
         }
 
         @keyframes float {
-            0%, 100% { transform: rotate(45deg) translateY(0); }
-            50% { transform: rotate(45deg) translateY(-20px); }
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(5vw, 10vh); }
+            50% { transform: translate(-3vw, 15vh); }
+            75% { transform: translate(8vw, -5vh); }
         }
 
-        h1 {
-            font-size: 4em;
-            text-shadow: 0 0 15px #ff4081;
-            margin: 50px 0;
-            transform: rotate(-5deg);
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
 
-        .message {
-            background: rgba(255, 64, 129, 0.1);
-            padding: 30px;
-            border-radius: 20px;
-            margin: 50px 0;
-            position: relative;
-            transition: 0.3s;
-        }
-
-        .message:hover {
-            transform: scale(1.02);
-            box-shadow: 0 0 30px #ff4081;
-        }
-
-        .secret-button {
-            background: none;
-            border: 3px solid #ff4081;
-            color: white;
-            padding: 15px 30px;
-            font-size: 1.5em;
-            border-radius: 30px;
-            cursor: pointer;
-            transition: 0.3s;
-            margin: 20px;
-        }
-
-        .secret-button:hover {
-            background: #ff4081;
-            letter-spacing: 3px;
-        }
-
-        #photos {
-            display: none;
-            margin-top: 50px;
-            opacity: 0;
-            transition: 1s;
-        }
-
-        .photo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-        }
-
-        .photo {
-            border-radius: 15px;
-            overflow: hidden;
-            transform: rotate(3deg);
-            transition: 0.3s;
-        }
-
-        .photo:hover {
-            transform: rotate(0) scale(1.1);
-        }
-
-        .hidden-message {
-            display: none;
-            font-size: 2em;
-            margin: 50px 0;
-            color: #ff4081;
-        }
-
-        .confetti {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            background: #ff4081;
-            pointer-events: none;
-        }
-
-        @keyframes explode {
-            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
+        @media (max-width: 600px) {
+            .card { padding: 20px; }
+            h1 { font-size: 2.5em; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>❤️ [Введи её имя] ❤️</h1>
+        <div class="hearts-background" id="heartsBg"></div>
         
-        <div class="message">
-            <p style="font-size: 1.5em;">
-                С того момента как ты появилась в моей жизни,<br>
-                Каждый день наполнен светом и теплом.<br>
-                Твоя улыбка — мой самый любимый рассвет,<br>
-                А сердце бьётся в ритме твоего сердца.
+        <div class="card">
+            <h1>💖 С Днём Влюблённых! 💖</h1>
+            <p style="color: #fff; font-size: 1.2em; line-height: 1.6;">
+                Дорогая [Имя],<br>
+                Сегодня особенный день, и я подготовил для тебя<br>
+                небольшое испытание. Готовься проявить свои навыки!
             </p>
+            <button class="btn" onclick="startGame()" style="margin-top: 20px;">
+                Начать любовный квест! 💻
+            </button>
         </div>
 
-        <button class="secret-button" onclick="revealPhotos()">Открой моё сердце ❤️</button>
+        <div class="game-container" id="game">
+            <h2 style="color: var(--pink); margin-bottom: 20px;">🚨 Исправь любовный баг!</h2>
+            <div class="code-block">
+                function calculateLove() {<br>
+                &nbsp;&nbsp;let myHeart = 100;<br>
+                &nbsp;&nbsp;let yourHeart = ???;<br>
+                &nbsp;&nbsp;// Твой код здесь<br>
+                &nbsp;&nbsp;return myHeart + yourHeart;<br>
+                }<br>
+                <br>
+                console.log(calculateLove()); // Должно быть 200
+            </div>
 
-        <div id="photos">
-            <div class="photo-grid">
-                <!-- Добавь 3-5 фото через тег <img src="url" class="photo"> -->
+            <div class="solution-btns">
+                <button class="btn" onclick="checkSolution(50)">yourHeart = 50;</button>
+                <button class="btn" onclick="checkSolution(100)">yourHeart = 100;</button>
+                <button class="btn" onclick="checkSolution('myHeart')">yourHeart = myHeart;</button>
             </div>
-            <div class="hidden-message" id="finalMessage">
-                Ты сделала меня самым счастливым человеком на свете.<br>
-                Давай продолжим эту сказку вместе? 💌
-            </div>
+        </div>
+
+        <div id="victory">
+            <h1 style="color: var(--pink); margin-bottom: 20px;">💌 Ты победила! 💘</h1>
+            <p style="color: #fff; font-size: 1.2em; line-height: 1.6;">
+                Каждая строчка моего кода стремится к тебе.<br>
+                Ты - мой идеальный алгоритм,<br>
+                Самое элегантное решение всех моих задач.<br>
+                Даваш писать нашу историю любви вместе?<br>
+                💕 Твой [Твоё имя] 💕
+            </p>
+            <button class="btn" onclick="location.reload()" style="margin-top: 20px;">
+                Перезапустить любовь ♾️
+            </button>
         </div>
     </div>
 
     <script>
+        // Создание фоновых сердечек
         function createHearts() {
-            setInterval(() => {
+            const heartsBg = document.getElementById('heartsBg');
+            for (let i = 0; i < 50; i++) {
                 const heart = document.createElement('div');
                 heart.className = 'heart';
+                heart.innerHTML = '❤️';
                 heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.animationDuration = Math.random() * 3 + 2 + 's';
-                document.body.appendChild(heart);
-                
-                setTimeout(() => heart.remove(), 5000);
-            }, 300);
+                heart.style.top = Math.random() * 100 + 'vh';
+                heart.style.animationDelay = Math.random() * 2 + 's';
+                heartsBg.appendChild(heart);
+            }
         }
 
-        function createConfetti() {
-            for(let i = 0; i < 50; i++) {
+        // Запуск игры
+        function startGame() {
+            document.querySelector('.card').style.display = 'none';
+            document.getElementById('game').style.display = 'block';
+        }
+
+        // Проверка решения
+        function checkSolution(answer) {
+            const correctAnswer = 100;
+            if (answer === correctAnswer) {
+                document.getElementById('game').style.display = 'none';
+                document.getElementById('victory').style.display = 'block';
+                startConfetti();
+            } else {
+                alert('❌ Неверно! Попробуй ещё раз!');
+            }
+        }
+
+        // Эффект конфетти
+        function startConfetti() {
+            const colors = ['#ff69b4', '#00ff00', '#00ffff', '#ffff00'];
+            for (let i = 0; i < 100; i++) {
                 const confetti = document.createElement('div');
-                confetti.className = 'confetti';
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.borderRadius = '50%';
                 confetti.style.left = Math.random() * 100 + 'vw';
-                confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                confetti.style.animation = `explode ${Math.random() * 3 + 2}s linear`;
+                confetti.style.top = '-10px';
+                confetti.style.animation = `fall ${Math.random() * 3 + 2}s linear`;
                 document.body.appendChild(confetti);
-                
+
                 setTimeout(() => confetti.remove(), 5000);
             }
         }
 
-        function revealPhotos() {
-            document.getElementById('photos').style.display = 'block';
-            setTimeout(() => {
-                document.getElementById('photos').style.opacity = '1';
-                createConfetti();
-                setTimeout(() => {
-                    document.getElementById('finalMessage').style.display = 'block';
-                    new Audio('https://assets.mixkit.co/active_storage/sfx/2993/2993-preview.mp3').play();
-                }, 2000);
-            }, 100);
-            
-            document.querySelector('.secret-button').style.display = 'none';
+        // Инициализация
+        window.onload = () => {
+            createHearts();
+            // Добавь имя автоматически
+            const name = prompt('Введи её имя:') || 'Любимая';
+            document.querySelector('h1').innerHTML = `💖 ${name}, с Днём Влюблённых! 💖`;
         }
 
-        // Запускаем магию при загрузке
-        window.onload = function() {
-            createHearts();
-            document.querySelector('h1').innerHTML = `❤️ ${prompt('Введи её имя:')} ❤️`;
-            new Audio('https://cdn.pixabay.com/download/audio/2022/02/14/audio_d1718d41c3.mp3').play();
-        }
+        // Анимация падения конфетти
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fall {
+                to {
+                    transform: translateY(100vh) rotate(360deg);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
 </body>
 </html>
