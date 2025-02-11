@@ -1,206 +1,216 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>💘 Ты — мой exception</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Для Самой Особенной ❤️</title>
     <style>
-        :root {
-            --heart: #ff3f81;
-            --bg: #0f0f1a;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Pacifico&family=Dancing+Script:wght@700&display=swap');
         
-        * {
-            touch-action: manipulation;
-        }
-
         body {
             margin: 0;
-            background: var(--bg);
-            overflow: hidden;
-            font-family: 'Courier New', monospace;
+            background: #1a1a1a;
+            overflow-x: hidden;
+            font-family: 'Pacifico', cursive;
+            color: #fff;
         }
 
-        #loveCanvas {
-            position: fixed;
-            top: 0;
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .heart {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff4081;
+            transform: rotate(45deg);
+            animation: float 3s infinite;
+        }
+
+        .heart:before,
+        .heart:after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ff4081;
+            border-radius: 50%;
+        }
+
+        .heart:before {
+            top: -10px;
             left: 0;
         }
 
-        .ui {
-            position: relative;
-            z-index: 2;
-            color: white;
-            padding: 20px;
-            pointer-events: none;
+        .heart:after {
+            left: -10px;
+            top: 0;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: rotate(45deg) translateY(0); }
+            50% { transform: rotate(45deg) translateY(-20px); }
+        }
+
+        h1 {
+            font-size: 4em;
+            text-shadow: 0 0 15px #ff4081;
+            margin: 50px 0;
+            transform: rotate(-5deg);
         }
 
         .message {
-            font-size: 1.2em;
-            line-height: 1.5;
-            opacity: 0;
-            transform: translateY(30px);
-            transition: 1s;
-            background: rgba(0,0,0,0.7);
-            padding: 15px;
-            border-radius: 10px;
-            margin: 10px 0;
+            background: rgba(255, 64, 129, 0.1);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 50px 0;
+            position: relative;
+            transition: 0.3s;
         }
 
-        .show { opacity: 1; transform: none; }
+        .message:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 30px #ff4081;
+        }
 
-        .heart-btn {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 60px;
-            height: 60px;
-            background: var(--heart);
-            border-radius: 50%;
+        .secret-button {
+            background: none;
+            border: 3px solid #ff4081;
+            color: white;
+            padding: 15px 30px;
+            font-size: 1.5em;
+            border-radius: 30px;
             cursor: pointer;
-            pointer-events: all;
-            box-shadow: 0 0 30px var(--heart);
-            animation: pulse 2s infinite;
+            transition: 0.3s;
+            margin: 20px;
         }
 
-        @keyframes pulse {
-            0% { transform: translateX(-50%) scale(1); }
-            50% { transform: translateX(-50%) scale(1.1); }
-            100% { transform: translateX(-50%) scale(1); }
+        .secret-button:hover {
+            background: #ff4081;
+            letter-spacing: 3px;
         }
 
-        #debug {
+        #photos {
+            display: none;
+            margin-top: 50px;
+            opacity: 0;
+            transition: 1s;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .photo {
+            border-radius: 15px;
+            overflow: hidden;
+            transform: rotate(3deg);
+            transition: 0.3s;
+        }
+
+        .photo:hover {
+            transform: rotate(0) scale(1.1);
+        }
+
+        .hidden-message {
+            display: none;
+            font-size: 2em;
+            margin: 50px 0;
+            color: #ff4081;
+        }
+
+        .confetti {
             position: fixed;
-            top: 10px;
-            right: 10px;
-            color: #fff;
-            font-size: 12px;
+            width: 10px;
+            height: 10px;
+            background: #ff4081;
+            pointer-events: none;
+        }
+
+        @keyframes explode {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; }
         }
     </style>
 </head>
 <body>
-    <canvas id="loveCanvas"></canvas>
-    <div class="ui">
-        <div class="message" id="msg1">[System] Initializing LoveOS...</div>
-        <div class="message" id="msg2">[Physics] Attraction force: ∞</div>
-        <div class="message" id="msg3">[AI] You’re my optimal solution</div>
-    </div>
-    <div class="heart-btn" id="heart"></div>
-    <div id="debug"></div>
-
-<script>
-const messages = [
-    {text: "Подключаю гравитацию сердца...", delay: 1000},
-    {text: "Синхронизация взглядов... ✓", delay: 1500},
-    {text: "Твои глаза → blackhole (escape impossible)", delay: 2000},
-    {text: "Сканирование улыбки... 100% match", delay: 1000},
-    {text: "!!! ВНИМАНИЕ !!! Обнаружена перегрузка cute_mode", delay: 2000},
-];
-
-class LoveSimulator {
-    constructor() {
-        this.canvas = document.getElementById('loveCanvas');
-        this.ctx = this.canvas.getContext('2d');
-        this.particles = [];
-        this.resize();
-        this.bindEvents();
-        this.animate();
+    <div class="container">
+        <h1>❤️ [Введи её имя] ❤️</h1>
         
-        // Mobile sensors
-        this.acc = {x:0, y:0};
-        if (window.DeviceOrientationEvent) {
-            window.addEventListener('deviceorientation', (e) => {
-                this.acc.x = e.gamma * 0.1; 
-                this.acc.y = e.beta * 0.1;
-            });
-        }
-    }
+        <div class="message">
+            <p style="font-size: 1.5em;">
+                С того момента как ты появилась в моей жизни,<br>
+                Каждый день наполнен светом и теплом.<br>
+                Твоя улыбка — мой самый любимый рассвет,<br>
+                А сердце бьётся в ритме твоего сердца.
+            </p>
+        </div>
 
-    resize() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-    }
+        <button class="secret-button" onclick="revealPhotos()">Открой моё сердце ❤️</button>
 
-    bindEvents() {
-        window.addEventListener('resize', this.resize.bind(this));
-        
-        // Heart interactions
-        const heart = document.getElementById('heart');
-        let tapCount = 0;
-        
-        heart.addEventListener('click', () => {
-            this.createExplosion();
-            if (tapCount < messages.length) {
-                document.getElementById(`msg${tapCount+1}`).classList.add('show');
-                tapCount++;
-            }
-            if (tapCount === messages.length) {
-                this.showFinale();
-            }
-        });
-    }
-
-    createExplosion(x = this.canvas.width/2, y = this.canvas.height/2) {
-        for(let i = 0; i < 50; i++) {
-            this.particles.push({
-                x, y,
-                vx: (Math.random() - 0.5) * 5,
-                vy: (Math.random() - 0.5) * 5 - 2,
-                life: 1,
-                color: `hsl(${Math.random()*360}, 100%, 50%)`
-            });
-        }
-    }
-
-    showFinale() {
-        const finaleMsg = document.createElement('div');
-        finaleMsg.className = 'message show';
-        finaleMsg.innerHTML = `
-            <div style="color: #ff3f81; text-align: center">
-                <div>💖 COMPILATION SUCCESS 💖</div>
-                <div style="font-size:0.8em">You're my:<br>
-                <span style="color: #00ff9d">while(true) { love++ }</span>
-                </div>
+        <div id="photos">
+            <div class="photo-grid">
+                <!-- Добавь 3-5 фото через тег <img src="url" class="photo"> -->
             </div>
-        `;
-        document.querySelector('.ui').appendChild(finaleMsg);
-    }
+            <div class="hidden-message" id="finalMessage">
+                Ты сделала меня самым счастливым человеком на свете.<br>
+                Давай продолжим эту сказку вместе? 💌
+            </div>
+        </div>
+    </div>
 
-    animate() {
-        this.ctx.fillStyle = var(--bg);
-        this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
-        
-        // Update particles
-        this.particles.forEach((p, i) => {
-            p.x += p.vx + this.acc.x;
-            p.y += p.vy + this.acc.y;
-            p.vy += 0.1;
-            p.life -= 0.02;
+    <script>
+        function createHearts() {
+            setInterval(() => {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.animationDuration = Math.random() * 3 + 2 + 's';
+                document.body.appendChild(heart);
+                
+                setTimeout(() => heart.remove(), 5000);
+            }, 300);
+        }
+
+        function createConfetti() {
+            for(let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.style.animation = `explode ${Math.random() * 3 + 2}s linear`;
+                document.body.appendChild(confetti);
+                
+                setTimeout(() => confetti.remove(), 5000);
+            }
+        }
+
+        function revealPhotos() {
+            document.getElementById('photos').style.display = 'block';
+            setTimeout(() => {
+                document.getElementById('photos').style.opacity = '1';
+                createConfetti();
+                setTimeout(() => {
+                    document.getElementById('finalMessage').style.display = 'block';
+                    new Audio('https://assets.mixkit.co/active_storage/sfx/2993/2993-preview.mp3').play();
+                }, 2000);
+            }, 100);
             
-            this.ctx.fillStyle = p.color;
-            this.ctx.beginPath();
-            this.ctx.arc(p.x, p.y, 3 * p.life, 0, Math.PI * 2);
-            this.ctx.fill();
-            
-            if (p.life <= 0) this.particles.splice(i, 1);
-        });
-        
-        requestAnimationFrame(this.animate.bind(this));
-    }
-}
+            document.querySelector('.secret-button').style.display = 'none';
+        }
 
-new LoveSimulator();
-
-// Easter egg: Konami code
-const konami = [38,38,40,40,37,39,37,39,66,65];
-let input = [];
-document.addEventListener('keyup', (e) => {
-    input.push(e.keyCode);
-    if (input.toString().includes(konami.toString())) {
-        document.body.style.background = '#000';
-        alert('Secret cheat code: LoveUnlocked=true');
-    }
-});
-</script>
+        // Запускаем магию при загрузке
+        window.onload = function() {
+            createHearts();
+            document.querySelector('h1').innerHTML = `❤️ ${prompt('Введи её имя:')} ❤️`;
+            new Audio('https://cdn.pixabay.com/download/audio/2022/02/14/audio_d1718d41c3.mp3').play();
+        }
+    </script>
 </body>
 </html>
