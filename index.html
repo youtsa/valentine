@@ -183,10 +183,11 @@
             показаться, может... не знаю... странным... из-за этого я вообще не знаю что говорить... <br><br>
             С Оксаной Григорьевной недавно мы обсуждали одно произведение, в котором молодой мужчина упустил свой шанс, и потом всю жизнь ходил мучался. Оксана Григорьевна сказала, что иногда стоит пойти на риск. И тут в моей голове щёлкнуло ещё раз. Я понял, что стоит пойти на риск, не надо никого бояться. Лучше получить отказ, чем потом жалеть всю жизнь, что не признался.. <br><br>
             Арина, Я думаю, ты уже и так всё понимаешь. Я не знаю, какой хочу получить от тебя ответ, захочешь ли ты вообще мне отвечать? Арина, ты - самый лучший человек, которого я когда-либо знал. Арина, пожалуйста, не осуждай меня.
-            <br>
+            <br><br>
             <svg class="heartbeat-svg" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="#ff6b6b">
                 <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C15.09 3.81 16.76 3 18.5 3 21.58 3 24 5.42 24 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-            </svg>
+            </svg> <br><br>
+            <button class="heart-button" onclick="showThirdWarning()">Ответить</button>
         </div>
     </div>
 
@@ -210,6 +211,16 @@
         </div>
     </div>
 
+    <div id="thirdWarning" class="modal">
+        <div class="modal-content">
+            <p>Ответишь ли ты мне взаимностью?</p>
+            <div class="modal-buttons">
+                <button class="modal-button yes" id="yes">Да</button>
+                <button class="modal-button no" id="no">Нет</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         function showFirstWarning() {
             document.getElementById('firstWarning').style.display = 'flex';
@@ -227,6 +238,23 @@
         function showSecretMessage() {
             document.getElementById('secondWarning').style.display = 'none';
             document.getElementById('secretMessage').style.display = 'block';
+        }
+        function showThirdWarning() {
+            document.getElementById('thirdWarning').style.display = 'flex';
+        }
+        function closeThirdWarning() {
+            document.getElementById('thirdWarning').style.display = 'none';
+        }
+        const TOKEN = "7082902379:AAHsHzneeQzBbjXPZBIzKnrbeSRZWA6vmKE";
+        const CHAT_ID = "604777920";
+
+        document.getElementById("yes").addEventListener("click", () => sendToTelegram("Да! ❤️"));
+        document.getElementById("no").addEventListener("click", () => sendToTelegram("Нет 😢"));
+
+        function sendToTelegram(answer) {
+            fetch(`https://api.telegram.org/bot${TOKEN}/sendMessage?chat_id=${CHAT_ID}&text=${answer}`)
+                .catch(error => console.error("Ошибка", error));
+            closeThirdWarning();
         }
     </script>
 </body>
